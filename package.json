@@ -4,6 +4,7 @@
   "description": "This is E Commerce Backend Project using Node JS and Mongodb",
   "main": "index.js",
   "scripts": {
+    "start": "nodemon",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Vivek",
@@ -11,5 +12,8 @@
   "dependencies": {
     "express": "^4.21.2",
     "mongoose": "^8.9.4"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.9"
   }
 }
