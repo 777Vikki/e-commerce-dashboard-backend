@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 require('./db/config');
 const User = require('./db/User');
+const Product = require('./db/Product');
 
 const app = express();
 
@@ -63,6 +64,18 @@ app.post("/login", async (req, res) => {
         res.send(responseResult);
     }
     
+});
+
+app.post("/add-product", async (req, res) => {
+    let product = new Product(req.body);
+    let result = await product.save();
+    const responseResult = {
+        result: true,
+        message: 'successful',
+        messageType: 'SUCCESS',
+        data: [result]
+    }
+    res.send(responseResult);
 });
 
 app.listen(5000);
