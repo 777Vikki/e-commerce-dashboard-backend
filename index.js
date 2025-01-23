@@ -78,4 +78,88 @@ app.post("/add-product", async (req, res) => {
     res.send(responseResult);
 });
 
+app.get("/product/:id", async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        // Find the product by its ID
+        const product = await Product.find({ userId: id });
+
+        if (!product) {
+            // If no product is found, return a not found response
+            return res.status(404).send({
+                result: false,
+                message: 'Product not found',
+                messageType: 'ERROR',
+                data: null
+            });
+        }
+
+        // If the product is found, return it
+        const responseResult = {
+            result: true,
+            message: 'Product retrieved successfully',
+            messageType: 'SUCCESS',
+            data: product
+        };
+
+        res.send(responseResult);
+    } catch (error) {
+        // Handle any errors (e.g., invalid ID format or database issues)
+        res.status(500).send({
+            result: false,
+            message: 'An error occurred while retrieving the product',
+            messageType: 'ERROR',
+            data: null
+        });
+    }
+});
+
+app.delete("/product/:id", async (req, res) => {
+    const { id } = req.params;
+
+    // Check if the provided ID is a valid ObjectId
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(400).send({
+            result: false,
+            message: 'Invalid product ID format',
+            messageType: 'ERROR',
+            data: null
+        });
+    }
+
+    try {
+        // Find and delete the product by its ID
+        const deleteProduct = await Product.deleteOne({ _id: id });
+
+        if (deleteProduct.deletedCount === 0) {
+            // If no product is found to delete, return a not found response
+            return res.status(404).send({
+                result: false,
+                message: 'Product not found',
+                messageType: 'ERROR',
+                data: null
+            });
+        }
+
+        // If the product is found and deleted, return a success response
+        const responseResult = {
+            result: true,
+            message: `${deleteProduct.deletedCount} Product(s) deleted successfully`,
+            messageType: 'SUCCESS',
+        };
+
+        res.send(responseResult);
+    } catch (error) {
+        // Handle any other errors (e.g., database issues)
+        console.error(error);  // Log the error for debugging purposes
+        res.status(500).send({
+            result: false,
+            message: 'An error occurred while deleting the product',
+            messageType: 'ERROR',
+            data: null
+        });
+    }
+});
+
 app.listen(5000);
