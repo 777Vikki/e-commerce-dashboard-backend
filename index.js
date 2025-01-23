@@ -118,16 +118,6 @@ app.get("/product/:id", async (req, res) => {
 app.delete("/product/:id", async (req, res) => {
     const { id } = req.params;
 
-    // Check if the provided ID is a valid ObjectId
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-        return res.status(400).send({
-            result: false,
-            message: 'Invalid product ID format',
-            messageType: 'ERROR',
-            data: null
-        });
-    }
-
     try {
         // Find and delete the product by its ID
         const deleteProduct = await Product.deleteOne({ _id: id });
