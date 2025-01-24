@@ -189,4 +189,43 @@ app.get("/product-detail/:id", async (req, res) => {
     }
 });
 
+app.put("/product-detail/:id", async (req, res) => {
+    const { id } = req.params;  // Extract the product ID from the URL
+    const updatedData = req.body; // Extract the updated product data from the request body
+
+    try {
+        // Find the product by its ID and update it
+        const product = await Product.findByIdAndUpdate(id, updatedData, { new: true });
+
+        if (!product) {
+            // If no product is found, return a not found response
+            return res.status(404).send({
+                result: false,
+                message: 'Product not found',
+                messageType: 'ERROR',
+                data: null
+            });
+        }
+
+        // If the product is successfully updated, return the updated product
+        const responseResult = {
+            result: true,
+            message: 'Product updated successfully',
+            messageType: 'SUCCESS',
+            data: product
+        };
+
+        res.send(responseResult);
+    } catch (error) {
+        // Handle any errors (e.g., invalid ID format, validation errors, or database issues)
+        res.status(500).send({
+            result: false,
+            message: 'An error occurred while updating the product',
+            messageType: 'ERROR',
+            data: null
+        });
+    }
+});
+
+
 app.listen(5000);
