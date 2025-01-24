@@ -152,4 +152,41 @@ app.delete("/product/:id", async (req, res) => {
     }
 });
 
+app.get("/product-detail/:id", async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        // Find the product by its ID
+        const product = await Product.find({ _id: id });
+
+        if (!product) {
+            // If no product is found, return a not found response
+            return res.status(404).send({
+                result: false,
+                message: 'Product not found',
+                messageType: 'ERROR',
+                data: null
+            });
+        }
+
+        // If the product is found, return it
+        const responseResult = {
+            result: true,
+            message: 'Product retrieved successfully',
+            messageType: 'SUCCESS',
+            data: product
+        };
+
+        res.send(responseResult);
+    } catch (error) {
+        // Handle any errors (e.g., invalid ID format or database issues)
+        res.status(500).send({
+            result: false,
+            message: 'An error occurred while retrieving the product',
+            messageType: 'ERROR',
+            data: null
+        });
+    }
+});
+
 app.listen(5000);
