@@ -66,7 +66,7 @@ app.post("/login", async (req, res) => {
     
 });
 
-app.post("/add-product", async (req, res) => {
+app.post("/product", async (req, res) => {
     let product = new Product(req.body);
     let result = await product.save();
     const responseResult = {
