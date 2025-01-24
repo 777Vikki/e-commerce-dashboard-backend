@@ -227,5 +227,51 @@ app.put("/product-detail/:id", async (req, res) => {
     }
 });
 
+app.get("/search/:id", async(req, res) => {
+    const { id } = req.params;
+    const { key } = req.query;
+    try {
+        const findDetail = { userId: id };
+        if(key) {
+            findDetail['$or'] = [
+                { name : {$regex: key, $options: 'i'}},
+                { company : {$regex: key, $options: 'i'}},
+                { category : {$regex: key, $options: 'i'}},
+                { price : {$regex: key, $options: 'i'}},
+            ]
+        }
+        const product = await Product.find(findDetail);
+
+        if (!product) {
+            // If no product is found, return a not found response
+            return res.status(404).send({
+                result: false,
+                message: 'Product not found',
+                messageType: 'ERROR',
+                data: null
+            });
+        }
+
+        // If the product is found, return it
+        const responseResult = {
+            result: true,
+            message: 'Product retrieved successfully',
+            messageType: 'SUCCESS',
+            data: product
+        };
+
+        res.send(responseResult);
+    } catch (error) {
+        // Handle any errors (e.g., invalid ID format or database issues)
+        res.status(500).send({
+            result: false,
+            message: 'An error occurred while retrieving the product',
+            messageType: 'ERROR',
+            data: null
+        });
+    }
+
+});
+
 
 app.listen(5000);
